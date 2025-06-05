@@ -1,1 +1,48 @@
+pipeline {
+    agent any  // Use any available agent
 
+    tools {
+        gradle 'Gradle'
+        jdk 'JDK'          // Make sure 'JDK' matches your Jenkins JDK installation name
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'master', url: 'https://github.com/MUSHARAFBAIG124/gradlem.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('mygradleapp') {
+                    sh 'gradle build'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('mygradleapp') {
+                    sh 'gradle test'
+                }
+            }
+        }
+
+        stage('Run Application') {
+            steps {
+                dir('mygradleapp') {
+                    sh 'gradle run'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build and deployment successful!'
+        }
+        failure {
+            echo 'Build failed!'
+        }
+    }
+}
